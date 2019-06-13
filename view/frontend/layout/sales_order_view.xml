@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!--
+ * Netzexpert Odoo Statuses Extension
+ */
+ -->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+<body>
+    <referenceContainer name="content">
+        <block class="Netzexpert\OdooOrderStatus\Block\Sales\Order\OdooStatuses" name="odoo.statuses" template="Netzexpert_OdooOrderStatus::sales/order/statuses.phtml" after="sales.order.info" />
+    </referenceContainer>
+</body>
+</page>

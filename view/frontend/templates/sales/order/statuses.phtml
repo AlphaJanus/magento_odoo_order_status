@@ -1,0 +1,18 @@
+<?php
+/**@var $block \Netzexpert\OdooOrderStatus\Block\Sales\Order\OdooStatuses */
+?>
+<div class="block block-order-statuses">
+    <div class="block-title">
+        <strong>Order Statuses</strong>
+    </div>
+    <div class="block-content">
+        <ul class="odoo statuses">
+            <?php foreach ($block->getStatusesList() as $item):  ?>
+                <li class="statuses">
+                    <?php echo $block->convertDate() ?>
+                    <?php echo $item->getData('status') ?>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    </div>
+</div>

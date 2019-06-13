@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="odoo_order_status_history" resource="default" engine="innodb">
+        <column xsi:type="int" name="id" padding="10" unsigned="true" nullable="false" identity="true"/>
+        <column xsi:type="int" name="order_id" padding="10" unsigned="true" nullable="false" />
+        <column xsi:type="timestamp" name="date" on_update="false" nullable="false" default="CURRENT_TIMESTAMP"/>
+        <column xsi:type="varchar" name="status" nullable="true"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="id"/>
+        </constraint>
+        <constraint xsi:type="foreign" referenceId="OD_ORD_STATUS_HIS_ID_SAL_ORD_ENT_ID" table="odoo_order_status_history" column="order_id" referenceTable="sales_order" referenceColumn="entity_id" onDelete="CASCADE"/>
+    </table>
+</schema>

@@ -1,0 +1,25 @@
+<!--@subject Statusänderung für die Bestellung {{var orderId}} in … (Beispiel: Wird Produziert) @-->
+{{template config_path="design/email/header_template"}}
+<table class="greetings">
+    <tr>
+        <th>
+            Sehr geehrte {{var name}}
+        </th>
+    </tr>
+</table>
+<table class="table">
+       <tr>
+           <th>
+               Sehr geehrte …
+               Wir wollen ihnen mitteilen das wir mit Ihrer Bestellung ein schritt weitergekommen sind.
+               Die Status hat sich jetzt in {{var status}} geändert.
+               Die komplette History können Sie hier in Ihren Persönlichen Account nachsehen.
+               <br>
+               Mfg
+               <br>
+               Troas Team
+           </th>
+       </tr>
+</table>
+
+{{template config_path="design/email/footer_template"}}
