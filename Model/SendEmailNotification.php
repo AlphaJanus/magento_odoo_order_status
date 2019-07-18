@@ -67,8 +67,8 @@ class SendEmailNotification
 
     public function sendEmail($orderid) {
         try {
-            $odooOrder = $this->odooStatusRepository->get($orderid);
-            $order = $this->orderRepository->get($orderid);
+            $odooOrderStatus = $this->odooStatusRepository->get($orderid);
+            $order = $this->orderRepository->get($odooOrderStatus->getOrderId());
             $storeScope = $this->storeManager->getStore();
             $transport = $this->transportBuilder->setTemplateIdentifier('status_change_notification')
                 ->setTemplateOptions(['area' => 'frontend', 'store' => \Magento\Store\Model\Store::DEFAULT_STORE_ID])
@@ -77,7 +77,7 @@ class SendEmailNotification
                         'orderId'       => $orderid,
                         'store'         => $storeScope,
                         'name'          => $order->getCustomerFirstname(),
-                        'status'        => $odooOrder->getData('status')
+                        'status'        => $odooOrderStatus->getData('status')
                     ]
                 )
                 ->setFrom('sales')

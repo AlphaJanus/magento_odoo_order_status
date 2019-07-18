@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Netzexpert\OdooOrderStatus\Api\Data\OdooOrderStatusSearchResultsInterface"
+                type="Magento\Framework\Api\SearchResults"/>
     <type name="Magento\Sales\Model\Order">
         <plugin name="addExtensionAttributes" type="Netzexpert\OdooOrderStatus\Plugin\Sales\Model\OrderPlugin" />
     </type>

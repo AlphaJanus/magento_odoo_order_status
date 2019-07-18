@@ -8,6 +8,9 @@
 
 namespace Netzexpert\OdooOrderStatus\Api;
 
+use Magento\Framework\Api\SearchCriteriaInterface;
+use Netzexpert\OdooOrderStatus\Api\Data\OdooOrderStatusInterface;
+use Netzexpert\OdooOrderStatus\Api\Data\OdooOrderStatusSearchResultsInterface;
 
 interface OdooStatusRepositoryInterface
 {
@@ -18,22 +21,27 @@ interface OdooStatusRepositoryInterface
     public function get($id);
 
     /**
-     * @param \Magento\Sales\Api\Data\ShipmentInterface $entity
-     * @return mixed
+     * @param OdooOrderStatusInterface $odooOrderStatus
+     * @return bool true on success
      */
-    public function delete(\Netzexpert\OdooOrderStatus\Api\Data\OdooOrderStatusInterface $odooOrderStatus);
+    public function delete(OdooOrderStatusInterface $odooOrderStatus);
 
     /**
-     * @param \Magento\Sales\Api\Data\ShipmentInterface $entity
-     * @return mixed
+     * @param OdooOrderStatusInterface $odooOrderStatus
+     * @return $this
      */
-    public function save(\Netzexpert\OdooOrderStatus\Api\Data\OdooOrderStatusInterface $odooOrderStatus);
+    public function save(OdooOrderStatusInterface $odooOrderStatus);
+
+    /**
+     * @param SearchCriteriaInterface $searchCriteria
+     * @return OdooOrderStatusSearchResultsInterface
+     */
+    public function getList(SearchCriteriaInterface $searchCriteria);
 
     /**
      * @param int $orderId
      * @param string $newStatus
-     * @return mixed
+     * @return int
      */
     public function saveNewStatus($orderId, $newStatus);
-
 }
