@@ -9,34 +9,53 @@
 namespace Netzexpert\OdooOrderStatus\Model;
 
 use GuzzleHttp\Exception\ConnectException;
+use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
+use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Exception\CouldNotSaveException;
+use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 use Netzexpert\OdooOrderStatus\Api\Data\OdooOrderStatusInterface;
+use Netzexpert\OdooOrderStatus\Api\Data\OdooOrderStatusSearchResultsInterface;
+use Netzexpert\OdooOrderStatus\Api\Data\OdooOrderStatusSearchResultsInterfaceFactory;
 use Netzexpert\OdooOrderStatus\Api\OdooStatusRepositoryInterface;
+use Netzexpert\OdooOrderStatus\Model\OrderStatusFactory;
+use Netzexpert\OdooOrderStatus\Model\ResourceModel\OrderStatus as OrderStatusResource;
+use Netzexpert\OdooOrderStatus\Model\ResourceModel\OrderStatus\CollectionFactory;
 
 class OdooStatusRepository implements OdooStatusRepositoryInterface
 {
-    /** @var ResourceModel\OrderStatus  */
-    private $orderStatus;
+    /** @var OrderStatusResource  */
+    private $orderStatusResource;
 
-    /**
-     * @var Statusfactory
-     */
+    /** @var OrderStatusFactory  */
     private $statusFactory;
 
+    /** @var CollectionFactory  */
+    private $statusCollectionFactory;
+
+    /** @var CollectionProcessorInterface  */
+    private $collectionProcessor;
+
+    private $searchResultsInterfaceFactory;
+
     /**
-     * @var \Magento\Framework\Stdlib\DateTime\TimezoneInterface
+     * @var TimezoneInterface
      */
     private $date;
 
     public function __construct(
-        \Netzexpert\OdooOrderStatus\Model\ResourceModel\OrderStatus $orderStatus,
-        \Netzexpert\OdooOrderStatus\Model\OrderStatusFactory $statusfactory,
-        \Magento\Framework\Stdlib\DateTime\TimezoneInterface $date
-    )
-    {
-        $this->orderStatus      = $orderStatus;
-        $this->statusFactory    = $statusfactory;
-        $this->date             = $date;
+        OrderStatusResource $orderStatusResource,
+        OrderStatusFactory $statusFactory,
+        CollectionFactory $statusCollectionFactory,
+        CollectionProcessorInterface $collectionProcessor,
+        OdooOrderStatusSearchResultsInterfaceFactory $searchResultsInterfaceFactory,
+        TimezoneInterface $date
+    ) {
+        $this->orderStatusResource              = $orderStatusResource;
+        $this->statusFactory                    = $statusFactory;
+        $this->statusCollectionFactory          = $statusCollectionFactory;
+        $this->collectionProcessor              = $collectionProcessor;
+        $this->searchResultsInterfaceFactory    = $searchResultsInterfaceFactory;
+        $this->date                             = $date;
     }
 
     /**
@@ -48,7 +67,7 @@ class OdooStatusRepository implements OdooStatusRepositoryInterface
         /** @var \Netzexpert\OdooOrderStatus\Model\OrderStatus $status */
         $status = $this->statusFactory->create();
         $status->load($id);
-        if(!$status->getId()) {
+        if (!$status->getId()) {
             return null;
         }
         return $status;
@@ -63,7 +82,7 @@ class OdooStatusRepository implements OdooStatusRepositoryInterface
     public function save(OdooOrderStatusInterface $odooOrderStatus)
     {
         try {
-            $this->orderStatus->save($odooOrderStatus);
+            $this->orderStatusResource->save($odooOrderStatus);
         } catch (ConnectException $exception) {
             throw new \Magento\Framework\Exception\TemporaryState\CouldNotSaveException(
                 __('Database connection error'),
@@ -110,6 +129,23 @@ class OdooStatusRepository implements OdooStatusRepositoryInterface
     }
 
     /**
+     * @inheritDoc
+     */
+    public function getList(SearchCriteriaInterface $searchCriteria)
+    {
+        $collection = $this->statusCollectionFactory->create();
+
+        $this->collectionProcessor->process($searchCriteria, $collection);
+        /** @var OdooOrderStatusSearchResultsInterface $searchResult */
+        $searchResult = $this->searchResultsInterfaceFactory->create();
+        $searchResult->setSearchCriteria($searchCriteria);
+        $searchResult->setItems($collection->getItems());
+        $searchResult->setTotalCount($collection->getSize());
+        return $searchResult;
+    }
+
+
+    /**
      * @inheritdoc
      */
     public function saveNewStatus($orderId, $newStatus)
@@ -120,10 +156,9 @@ class OdooStatusRepository implements OdooStatusRepositoryInterface
         $status->setOrderId($orderId)->setStatus($newStatus)->setDate($currentDate);
         try {
             $this->save($status);
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             throw new CouldNotSaveException(__('Unable to order status'));
         }
-        return $orderId;
+        return $status->getId();
     }
 }

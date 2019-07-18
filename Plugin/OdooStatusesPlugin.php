@@ -8,6 +8,8 @@
 
 namespace Netzexpert\OdooOrderStatus\Plugin;
 
+use Netzexpert\OdooOrderStatus\Api\Data\OdooOrderStatusInterface;
+use Netzexpert\OdooOrderStatus\Model\OdooStatusRepository;
 
 class OdooStatusesPlugin
 {
@@ -32,28 +34,26 @@ class OdooStatusesPlugin
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Netzexpert\OdooOrderStatus\Model\SendEmailNotification $sendEmailNotification
-    )
-    {
+    ) {
         $this->scopeConfig = $scopeConfig;
         $this->storeManager = $storeManager;
         $this->sendEmailNotification = $sendEmailNotification;
     }
 
     /**
-     * @param \Netzexpert\OdooOrderStatus\Model\OdooStatusRepository $odooStatusRepository
-     * @param $result
-     * @return mixed
+     * @param OdooStatusRepository $odooStatusRepository
+     * @param int $result
+     * @return OdooOrderStatusInterface
      */
     public function afterSaveNewStatus(
-        \Netzexpert\OdooOrderStatus\Model\OdooStatusRepository $odooStatusRepository,
-        $result
-    )
-    {
+        OdooStatusRepository $odooStatusRepository,
+        $oddooStatusId
+    ) {
         $storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
         $scope = $this->scopeConfig->getValue(self::ODOO_PATH, $storeScope);
         if ($scope['send_email'] == 1) {
-            $this->sendEmailNotification->sendEmail($result);
+            $this->sendEmailNotification->sendEmail($oddooStatusId);
         }
-        return $result;
+        return $oddooStatusId;
     }
 }

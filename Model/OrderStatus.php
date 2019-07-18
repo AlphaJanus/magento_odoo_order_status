@@ -25,8 +25,7 @@ class OrderStatus extends \Magento\Framework\Model\AbstractModel implements Odoo
     }
 
     /**
-     * Get Id
-     * @return int | null
+     * @inheritDoc
      */
     public function getId(): ?int
     {
@@ -49,7 +48,7 @@ class OrderStatus extends \Magento\Framework\Model\AbstractModel implements Odoo
      */
     public function getOrderId(): int
     {
-        return $this->getData(self::DATE);
+        return $this->getData(self::ORDER_ID);
     }
 
     /**

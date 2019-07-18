@@ -8,7 +8,6 @@
 
 namespace Netzexpert\OdooOrderStatus\Api\Data;
 
-
 interface OdooOrderStatusInterface
 {
     const ID          = 'id';
@@ -18,9 +17,9 @@ interface OdooOrderStatusInterface
 
     /**
      * Get Id
-     * return int | null
+     * @return int | null
      */
-    public function getId(): ?int;
+    public function getId();
 
     /**
      * Set Id
@@ -66,5 +65,4 @@ interface OdooOrderStatusInterface
      * @return \Netzexpert\OdooOrderStatus\Api\Data\OdooOrderStatusInterface
      */
     public function setStatus($status);
-
 }
